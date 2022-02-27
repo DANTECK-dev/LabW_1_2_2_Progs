@@ -2,7 +2,6 @@
 #include <Windows.h>
 #include <stdio.h>
 #include <conio.h>
-#include <algorithm>
 #include <stdlib.h>
 #include <string>
 #include <cstdlib>
@@ -55,12 +54,15 @@ int main() {
 	/*С помощью связанного списка и функций создайте и сымитируйте работу с данными на
 	основе механизмов доступа «очередь» и «стек».*/
 
-struct myList {
-	myList* next = NULL;
-	string field;
-};
+
 
 void firstGeneralTask() {
+
+	struct FIFO_LIFO {
+		FIFO_LIFO* next = NULL;
+		string field;
+	};
+
 	std::cout<<"\n\n\tCколько будет элементов списка\n\n\t";
 	int structSize;
 	cin >> structSize;
@@ -71,15 +73,15 @@ void firstGeneralTask() {
 	std::cout << "\n\n\tВведите данные 1 элемента: ";
 	cin >> str;
 
-	myList* head = NULL;
-	head = new myList;
+	FIFO_LIFO* head = NULL;
+	head = new FIFO_LIFO;
 	head->field = str;
-	myList* pointer = head;
+	FIFO_LIFO* pointer = head;
 
 	for (int i = 1; i < structSize; i++) {
 		std::cout << "\n\tВведите данные " << i + 1 << " элемента: ";
 		cin >> str;
-		pointer->next = new myList; // создаем новый элемент
+		pointer->next = new FIFO_LIFO; // создаем новый элемент
 		pointer = pointer->next;
 		pointer->field = str;
 	}
@@ -150,13 +152,14 @@ void firstGeneralTask() {
 	пользователь). При смене выводите текущий элемент. Следите за границами списка, чтобы при
 	смене текущего не выйти за его пределы.*/
 
-struct myList {
-	myList* next = NULL;
-	myList* prev = NULL;
-	string field;
-};
-
 void secondGeneralTask() {
+
+	struct myList {
+		myList* next = NULL;
+		myList* prev = NULL;
+		string field;
+	};
+
 	string str;
 	std::cout << "\n\n\tВведите данные 1 элемента: ";
 	cin >> str;
@@ -165,6 +168,63 @@ void secondGeneralTask() {
 	head = new myList;
 	head->field = str;
 	myList* pointer = head;
+	std::system("cls");
+	int counter = 1;
+
+	while (true) {
+		cout << "\n\n\tСейчас выбран "<< counter <<" элемент списка : " << pointer->field;
+		if (pointer->next == NULL)cout << "\n\n\tСледующего элемента нет";
+		if (pointer->prev == NULL)cout << "\n\n\tПредыдущего элемента нет";
+		cout << "\n\n\t1.Добавить в элемент в конец списка.\n\t2.Выбрать следующий элемент списка\n\t3.Выбрать предыдущий элемент списка\n\t0.Выход\n\n\t";
+		int inputNum;
+		cin >> inputNum;
+		std::system("cls");
+		switch (inputNum) {
+			case(0): {std::cout << "\n\n\tНажмите любую клавишу для выхода... "; char p = _getch(); std::system("cls"); return; }
+			case(1): {
+				string str;
+				cout << "\n\n\tВведите данные следующего элемента списка: ";
+				cin >> str;
+				while (true) {
+					if (pointer->next == NULL)break;
+					pointer = pointer->next;
+					counter++;
+				}
+				pointer->next = new myList;
+				pointer->next->prev = pointer;
+				pointer = pointer->next;
+				pointer->field = str;
+				counter++;
+				std::system("cls");
+				break;
+			}
+			case(2): {
+				if (pointer->next == NULL) {
+					cout << "\n\n\tСледующего элемента нет, нажмите любую клавишу для выхода... ";
+					char p = _getch();
+					std::system("cls");
+					continue;
+				}
+				pointer = pointer->next;
+				counter++;
+				break;
+			}
+			case(3): {
+				if (pointer->prev == NULL) {
+					cout << "\n\n\tПредыдующего элемента нет, нажмите любую клавишу для выхода... ";
+					char p = _getch();
+					std::system("cls");
+					continue;
+				}
+				pointer = pointer->prev;
+				counter--;
+				break;
+			}
+			default:{std::cout << "\n\n\tВведенно неверное значение, нажмите любую клавишу для выхода... "; char p = _getch(); std::system("cls"); continue;}
+		}
+		std::system("cls");
+	}
+	std::cout << "\n\n\tНажмите любую клавишу для выхода... "; char p = _getch(); std::system("cls"); return;
 }
 
 
@@ -178,23 +238,27 @@ void secondGeneralTask() {
 
 
 struct person {
-	string	Surname = { "None" };
-	string	Name = { "None" };
-	string	Patronymic = { "None" };
-	string	Address = { "None" };
-	string	PhoneNum = { "None" };
-	string	PayDay = { "None" };
-	int 	Summ = 0;
+	person* next = NULL;
+	person* prev = NULL;
+	struct {
+		string	Surname = { "None" };
+		string	Name = { "None" };
+		string	Patronymic = { "None" };
+		string	Address = { "None" };
+		string	PhoneNum = { "None" };
+		string	PayDay = { "None" };
+		int 	Summ = 0;
+	}Data;
 };
 
-void fillClients(person* clients, int* counter);
+void fillClients(person* head, person* clients, int* counter);
 
-void addClients(person* clients, int* counter);
-void sortClients(person* clients, int* counter);
-void transformClients(person* clients, int* counter);
-void delClients(person* clients, int* counter);
-void showClients(person* clients, int* counter);
-void searchClients(person* clients, int* counter);
+void addClients(person* head, person* clients, int* counter);
+void sortClients(person* head, person* clients, int* counter);
+void transformClients(person* head, person* clients, int* counter);
+void delClients(person* head, person* clients, int* counter);
+void showClients(person* head, person* clients, int* counter);
+void searchClients(person* head, person* clients, int* counter);
 //void selectionClients	(person* clients, int* counter);
 
 
@@ -215,17 +279,16 @@ void individualTask() {										//<<<<--------main индивидуального задания
 	6) Поиск в массиве структур по заданному параметру (самостоятельно выберите поле
 	структуры и реализуйте поиск по нему). То есть это вывод, но только определенных данных.*/
 
-	int maxSize;
-	std::system("cls");
-	std::cout << "\n\tВведите максимальное количество клиентов: ";
-	cin >> maxSize;
+
+	person* head = NULL;
+	head = new person;
+	person* clients = head;
 	int* counter = new int;
 	*counter = 0;
-	person* clients = new person[maxSize];
+
 	std::system("cls");
 
-	fillClients(clients, counter);
-
+	fillClients(head, clients, counter);
 
 	///////	   МЕНЮ    /////////
 
@@ -242,26 +305,25 @@ void individualTask() {										//<<<<--------main индивидуального задания
 		std::cout << "\n\t    ----== 4. Удалить  данные клиента ==----    ";
 		std::cout << "\n\t    ----== 5. Вывести список клиентов ==----    ";
 		std::cout << "\n\t     ----== 6. Поиск клиента по базе ==----     ";
-		//std::cout << "\n\t   ----== 7. Выборка клиентов по сумме ==----   ";
 		std::cout << "\n\t              ----== 0.  Выход ==----           \n\t";
 		int inputNum;
 		std::cin >> inputNum;
 		std::system("cls");
 		switch (inputNum) {
-		case(0): {std::cout << "\n\tВыход\n"; return; }
-		case(1): {addClients(clients, counter); break; }
-		case(2): {sortClients(clients, counter); break; }
-		case(3): {transformClients(clients, counter); break; }
-		case(4): {delClients(clients, counter); break; }
-		case(5): {showClients(clients, counter); break; }
-		case(6): {searchClients(clients, counter); break; }
-			   //case(7): {selectionClients	(clients, counter); break; }
-		default: {std::cout << "\n\tВведено неверное значение, нажмите любую клавишу для продолжения... "; char p = _getch(); std::system("cls"); break; }
+			case(0): {std::cout << "\n\thead, Выход\n"; return; }
+			case(1): {addClients		(head, clients, counter); break; }
+			case(2): {sortClients		(head, clients, counter); break; }
+			case(3): {transformClients	(head, clients, counter); break; }
+			case(4): {delClients		(head, clients, counter); break; }
+			case(5): {showClients		(head, clients, counter); break; }
+			case(6): {searchClients		(head, clients, counter); break; }
+			default: {std::cout << "\n\tВведено неверное значение, нажмите любую клавишу для продолжения... "; char p = _getch(); std::system("cls"); break; }
 		}
 	}
 }
+//finished
 
-void fillClients(person* clients, int* counter) {
+void fillClients(person* head, person* clients, int* counter) {
 	string surnames[10] = { "Wallace",	"Сафонова", "Виноградов",	"Зотова",		"Шапошников",	"Brandon",	"Дементьев",	"Корнев",		"Пономарев",		"Ефремова" };
 	string names[10] = { "Carter",		"Мария",	"Олег",			"Анастасия",	"Макар",		"Rose",		"Арсен",		"Лука",			"Кирилл",			"Анна" };
 	string Patronymics[10] = { "None",		"Егоровна",	"Андреевич",	"Степановна",	"Михайлович",	"None",		"Миронович",	"Сергеевич",	"Константинович",	"Данииловна", };
@@ -280,20 +342,32 @@ void fillClients(person* clients, int* counter) {
 	string PayDays[10] = { "29.03.2021",		"27.02.2021",	"03.04.2021",	"01.02.2022",	"14.12.2021",	"23.11.2021",	"09.06.2021",	"22.05.2021",	"01.02.2021",	"05.12.2021", };
 	int Summs[10] = { 10333,			20419,			9103,			23374,			1826,			2873,			7059,			5318,			20832,			7256, };
 
-	for (int i = 0; i < 10; i++) {
-		clients[*counter].Surname = surnames[i];
-		clients[*counter].Name = names[i];
-		clients[*counter].Patronymic = Patronymics[i];
-		clients[*counter].Address = Address[i];
-		clients[*counter].PhoneNum = PhoneNums[i];
-		clients[*counter].PayDay = PayDays[i];
-		clients[*counter].Summ = Summs[i];
+	clients->Data.Surname = surnames[0];
+	clients->Data.Name = names[0];
+	clients->Data.Patronymic = Patronymics[0];
+	clients->Data.Address = Address[0];
+	clients->Data.PhoneNum = PhoneNums[0];
+	clients->Data.PayDay = PayDays[0];
+	clients->Data.Summ = Summs[0];
+	(*counter)++;
+
+	for (int i = 1; i < 10; i++) {
+		clients->next = new person;
+		clients->next->prev = clients;
+		clients = clients->next;
+		clients->Data.Surname = surnames[i];
+		clients->Data.Name = names[i];
+		clients->Data.Patronymic = Patronymics[i];
+		clients->Data.Address = Address[i];
+		clients->Data.PhoneNum = PhoneNums[i];
+		clients->Data.PayDay = PayDays[i];
+		clients->Data.Summ = Summs[i];
 		(*counter)++;
 	}
 }
 //finished
 
-void addClients(person* clients, int* counter) {
+void addClients(person* head, person* clients, int* counter) {
 	std::cout << "\n\n\tДобавление клиента\n";
 	string	newSurname = { "None" };
 	string	newName = { "None" };
@@ -313,120 +387,103 @@ void addClients(person* clients, int* counter) {
 	std::cout << "\n\tСумму покупки: ";				cin >> newSumm;
 	std::system("cls");
 
-	clients[*counter].Surname = newSurname;
-	clients[*counter].Name = newName;
-	clients[*counter].Patronymic = newPatronymic;
-	clients[*counter].Address = newAddress;
-	clients[*counter].PhoneNum = "+7" + newPhoneNum;
-	clients[*counter].PayDay = newPayDay;
-	clients[*counter].Summ = newSumm;
+	while (true) {
+		if (clients->next == NULL) break;
+		clients = clients->next;
+	}
+	clients->next				= new person;
+	clients->next->prev			= clients;
+	clients						= clients->next;
+	clients->Data.Surname		= newSurname;
+	clients->Data.Name			= newName;
+	clients->Data.Patronymic	= newPatronymic;
+	clients->Data.Address		= newAddress;
+	clients->Data.PhoneNum		= "+7" + newPhoneNum;
+	clients->Data.PayDay		= newPayDay;
+	clients->Data.Summ			= newSumm;
 
 	(*counter)++;
 
-	std::cout << "\n\tДобавлен \n" << "\n\tфамилия: " << newSurname
-		<< "\n\tИмя: " << newName << "\n\tОтчество: " << newPatronymic
-		<< "\n\tАдресс: " << newAddress << "\n\tНомер телефона: +7" << newPhoneNum
-		<< "\n\tДень оплаты: " << newPayDay << "\n\tСумму покупки: " << newSumm;
+	std::cout	<< "\n\tДобавлен \n"		<< "\n\tфамилия: "	<< newSurname
+				<< "\n\tИмя: "				<< newName			<< "\n\tОтчество: "			<< newPatronymic
+				<< "\n\tАдресс: "			<< newAddress		<< "\n\tНомер телефона: +7" << newPhoneNum
+				<< "\n\tДень оплаты: "		<< newPayDay		<< "\n\tСумму покупки: "	<< newSumm;
 
 	std::cout << "\n\n\tНажмите любую клавишу для возврата в меню... "; char p = _getch(); std::system("cls");
 	std::system("cls");
 };
 //finished
 
-void swapClients(person* clients, int* counter, int j) {
-	string temp = clients[j].Patronymic;
-	clients[j].Patronymic = clients[j + 1].Patronymic;
-	clients[j + 1].Patronymic = temp;
-	temp = clients[j].Name;
-	clients[j].Name = clients[j + 1].Name;
-	clients[j + 1].Name = temp;
-	temp = clients[j].Surname;
-	clients[j].Surname = clients[j + 1].Surname;
-	clients[j + 1].Surname = temp;
-	temp = clients[j].Address;
-	clients[j].Address = clients[j + 1].Address;
-	clients[j + 1].Address = temp;
-	temp = clients[j].PhoneNum;
-	clients[j].PhoneNum = clients[j + 1].PhoneNum;
-	clients[j + 1].PhoneNum = temp;
-	temp = clients[j].PayDay;
-	clients[j].PayDay = clients[j + 1].PayDay;
-	clients[j + 1].PayDay = temp;
-	int tempInt = clients[j].Summ;
-	clients[j].Summ = clients[j + 1].Summ;
-	clients[j + 1].Summ = tempInt;
-}
-void sortClients(person* clients, int* counter) {
+void sortClients(person* head, person* clients, int* counter) {
 
-
-
-	if (*counter == 1) {
-		std::cout << "\n\n\tВ базу всего лишь один клиент, сортировать нечего, нажмите любую кдавишу для возврата в меню... "; char p = _getch(); std::system("cls"); return;
-	}
 	std::cout << "\n\tСортировать всех клиентов по\n";
 	std::cout << "\n\t1. Фамилии\t2. Имя\t0.Выход\n\n\t";
 	int inputNum;
 	cin >> inputNum;
 	std::system("cls");
 	switch (inputNum) {
-	case(0): {std::cout << "\n\n\tВыход"; std::system("cls"); return; }
-	case(1): {
-		for (int i = 1; i < *counter; i++) {
-			for (int j = 0; j < (*counter) - i; j++) {
-				if (clients[j].Surname > clients[j + 1].Surname) {
-					swapClients(clients, counter, j);
+		case(0): {std::cout << "\n\n\tВыход"; std::system("cls"); return; }
+		case(1): {
+			for (int i = 1; i < *counter; i++) {
+				clients = head;
+				for (int j = 0; j < (*counter) - i; j++) {
+					if (clients->Data.Surname > clients->next->Data.Surname) {
+						clients->Data = clients->next->Data;
+					}
+					clients = clients->next;
 				}
 			}
+			std::cout << "\n\n\tСортировка по фамилии завершена, нажмите любую кдавишу для возврата в меню... "; char p = _getch(); std::system("cls"); return;
 		}
-		std::cout << "\n\n\tСортировка по фамилии завершена, нажмите любую кдавишу для возврата в меню... "; char p = _getch(); std::system("cls"); return;
-	}
-	case(2): {
-		for (int i = 1; i < *counter; i++) {
-			for (int j = 0; j < (*counter) - i; j++) {
-				if (clients[j].Name > clients[j + 1].Name) {
-					swapClients(clients, counter, j);
+		case(2): {
+			for (int i = 1; i < *counter; i++) {
+				clients = head;
+				for (int j = 0; j < (*counter) - i; j++) {
+					if (clients->Data.Name > clients->next->Data.Name) {
+						clients->Data = clients->next->Data;
+					}
+					clients = clients->next;
 				}
 			}
+			std::cout << "\n\n\tСортировка по имени завершена, нажмите любую кдавишу для возврата в меню... "; char p = _getch(); std::system("cls"); return;
 		}
-		std::cout << "\n\n\tСортировка по имени завершена, нажмите любую кдавишу для возврата в меню... "; char p = _getch(); std::system("cls"); return;
+		default: {std::cout << "\n\n\tВведено неверное значение, нажмите любую клавишу для возврата в меню... "; char p = _getch(); std::system("cls"); break; }
 	}
-	default: {std::cout << "\n\n\tВведено неверное значение, нажмите любую клавишу для возврата в меню... "; char p = _getch(); std::system("cls"); break; }
-	}
-
 	std::system("cls");
 }
 //finished
 
-void transform(person* clients, int* counter, int searchID) {
+void transform(person* head, person* clients, int* counter) {
 	std::cout << "\n\n\tКакие данные изменить\n"
-		<< "\n\t1. Фамилию - " << clients[searchID].Surname
-		<< "\n\t2. Имя - " << clients[searchID].Name
-		<< "\n\t3. Отчество - " << clients[searchID].Patronymic
-		<< "\n\t4. Адресс - " << clients[searchID].Address
-		<< "\n\t5. Телефонный номер - " << clients[searchID].PhoneNum
-		<< "\n\t6. День оплаты - " << clients[searchID].PayDay
-		<< "\n\t7. Сумму - " << clients[searchID].Summ
+		<< "\n\t1. Фамилию - "				<< clients->Data.Surname
+		<< "\n\t2. Имя - "					<< clients->Data.Name
+		<< "\n\t3. Отчество - "				<< clients->Data.Patronymic
+		<< "\n\t4. Адресс - "				<< clients->Data.Address
+		<< "\n\t5. Телефонный номер - "		<< clients->Data.PhoneNum
+		<< "\n\t6. День оплаты - "			<< clients->Data.PayDay
+		<< "\n\t7. Сумму - "				<< clients->Data.Summ
 		<< "\n\t0. Выход\n\n\t";
 	int InInt;
 	cin >> InInt;
 	switch (InInt) {
 	case(0): {break; }
-	case(1): {std::cout << "\n\n\tВведите Фамилию: ";	string temp; cin.get(); getline(cin, temp); clients[searchID].Surname = temp; break; }
-	case(2): {std::cout << "\n\n\tВведите Имя: ";		string temp; cin.get(); getline(cin, temp); clients[searchID].Name = temp; break; }
-	case(3): {std::cout << "\n\n\tВведите Отчество: ";	string temp; cin.get(); getline(cin, temp); clients[searchID].Patronymic = temp; break; }
-	case(4): {std::cout << "\n\n\tВведите Адресс: ";		string temp; cin.get(); getline(cin, temp); clients[searchID].Address = temp; break; }
-	case(5): {std::cout << "\n\n\tВведите Телефонный: ";	string temp; cin.get(); getline(cin, temp); clients[searchID].PhoneNum = temp; break; }
-	case(6): {std::cout << "\n\n\tВведите День: ";		string temp; cin.get(); getline(cin, temp); clients[searchID].PayDay = temp; break; }
-	case(7): {std::cout << "\n\n\tВведите Сумму: ";		int	   temp; cin.get();			cin >> temp; clients[searchID].Summ = temp; break; }
+	case(1): {std::cout << "\n\n\tВведите Фамилию: ";		cin.get(); getline(cin, clients->Data.Surname); 	break; }
+	case(2): {std::cout << "\n\n\tВведите Имя: ";			cin.get(); getline(cin, clients->Data.Name); 		break; }
+	case(3): {std::cout << "\n\n\tВведите Отчество: ";		cin.get(); getline(cin, clients->Data.Patronymic);	break; }
+	case(4): {std::cout << "\n\n\tВведите Адресс: ";		cin.get(); getline(cin, clients->Data.Address); 	break; }
+	case(5): {std::cout << "\n\n\tВведите Телефонный: ";	cin.get(); getline(cin, clients->Data.PhoneNum); 	break; }
+	case(6): {std::cout << "\n\n\tВведите День: ";			cin.get(); getline(cin, clients->Data.PayDay);		break; }
+	case(7): {std::cout << "\n\n\tВведите Сумму: ";			cin.get();		   cin >> clients->Data.Summ;		break; }
 	default: {std::cout << "\n\n\tВведено неверное значение, нажмите любую клавишу для возврата в меню... "; char p = _getch(); std::system("cls");	  break; }
 	}
 	std::system("cls");
 }
-void transformClients(person* clients, int* counter) {
+void transformClients(person* head, person* clients, int* counter) {
 	std::cout << "\n\n\tИзменить данные клиента\n\n\t\tПоиск по \n\n\t1. ФИО\t2. Счёту в базе\t0. Выход\n\n\t";
 	int inputNum;
 	cin >> inputNum;
 	std::system("cls");
+	clients = head;
 	switch (inputNum) {
 	case(0): {std::cout << "\n\n\tВыход"; std::system("cls"); return; }
 	case(1): {
@@ -435,25 +492,31 @@ void transformClients(person* clients, int* counter) {
 		cin >> inputStr;
 		std::system("cls");
 		if (inputStr == "0") { return; }
-
 		int searchID = -1;
 		int couErr = 0;
-		for (int i = 0; i < *counter; i++) {
-			if (inputStr == clients[i].Surname) { searchID = i; couErr++; }
-			if (inputStr == clients[i].Name) { searchID = i; couErr++; }
-			if (inputStr == clients[i].Patronymic) { searchID = i; couErr++; }
+		int id = 1;
+		while(true){
+			if (clients->next == NULL)break;
+			if (inputStr == clients->Data.Surname)		{ searchID = id; couErr++; }
+			if (inputStr == clients->Data.Name)			{ searchID = id; couErr++; }
+			if (inputStr == clients->Data.Patronymic)	{ searchID = id; couErr++; }
+			clients = clients->next;
+			id++;
 		}
-
 		if (couErr > 1) { std::cout << "\n\n\tНайдено более одного клиента, введите дргуие даннные клиента. Нажмите любую клавишу для возврата в меню... "; char p = _getch(); std::system("cls"); return; }
 		if (searchID == -1) { std::cout << "\n\n\tКлиент не найден, нажмите любую клавишу что-бы вернуться в меню... "; char p = _getch(); std::system("cls"); return; }
 		if (searchID >= 0) {
-			std::cout << "\n\n\tИзменить данные клиента " << clients[searchID].Surname << " " << clients[searchID].Name
-				<< " " << clients[searchID].Patronymic << "\n\n\t1. Да\t2. Нет\n\n\t";
+			clients = head;
+			for (int i = 0; i < searchID-1; i++) {
+				clients = clients->next;
+			}
+			std::cout << "\n\n\tИзменить данные клиента " << clients->Data.Surname << " " << clients->Data.Name
+				<< " " << clients->Data.Patronymic << "\n\n\t1. Да\t2. Нет\n\n\t";
 			int inputH;
 			cin >> inputH;
 			std::system("cls");
 			switch (inputH) {
-			case(1): {transform(clients, counter, searchID); return; }
+			case(1): {transform(head, clients, counter); return; }
 			case(2): { return; }
 			default: {std::cout << "\n\n\tВведено неверное значение, нажмите любую клавишу для возврата в меню... "; char p = _getch(); std::system("cls"); return; }
 			}
@@ -463,16 +526,18 @@ void transformClients(person* clients, int* counter) {
 		std::cout << "\n\n\tВведите номер в базе. 0. Выход\n\n\t";
 		int inputInt;
 		cin >> inputInt;
-		if (inputInt == 0)return;
-		inputInt--;
+		if (inputInt == 0) { std::system("cls"); return; }
+		for (int i = 0; i < inputInt-1; i++) {
+			clients = clients->next;
+		}
 		std::system("cls");
-		std::cout << "\n\n\tИзменить данные клиента " << clients[inputInt].Surname << " " << clients[inputInt].Name
-			<< " " << clients[inputInt].Patronymic << "\n\n\t1. Да\t2. Нет\n\n\t";
+		std::cout << "\n\n\tИзменить данные клиента " << clients->Data.Surname << " " << clients->Data.Name
+			<< " " << clients->Data.Patronymic << "\n\n\t1. Да\t2. Нет\n\n\t";
 		int inP;
 		cin >> inP;
 		std::system("cls");
 		switch (inP) {
-		case(1): {transform(clients, counter, inputInt); return; }
+		case(1): {transform(head, clients, counter); return; }
 		case(2): { return; }
 		default: {std::cout << "\n\n\tВведено неверное значение, нажмите любую клавишу для возврата в меню... "; char p = _getch(); std::system("cls"); return; }
 		}
@@ -481,30 +546,37 @@ void transformClients(person* clients, int* counter) {
 	}
 
 	std::system("cls");
-
-
-
-	std::system("cls");
 }
 //finished
 
-void swapAndDelClients(person* clients, int* counter, int searchID) {
-	for (int i = searchID; i < *counter; i++) {
-		clients[i].Surname = clients[i + 1].Surname;
-		clients[i].Name = clients[i + 1].Name;
-		clients[i].Patronymic = clients[i + 1].Patronymic;
-		clients[i].Address = clients[i + 1].Address;
-		clients[i].PhoneNum = clients[i + 1].PhoneNum;
-		clients[i].PayDay = clients[i + 1].PayDay;
-		clients[i].Summ = clients[i + 1].Summ;
+void swapAndDelClients(person* head, person* clients, int* counter) {
+	if (clients->prev != nullptr && clients->next != nullptr) {
+		person* del = clients;
+		clients = clients->prev;
+		clients->next = clients->next->next;
+		clients->next->prev = clients;
+		delete *&del;
 	}
+	if (clients == head) {
+		clients = clients->next;
+		delete *&clients->prev;
+		clients->prev = NULL;
+		head = clients->next;
+	}
+	if (clients->prev != nullptr && clients->next == nullptr) {
+		clients = clients->prev;
+		delete *&clients->next;
+		clients->next = nullptr;
+	}
+	if (clients->prev == nullptr && clients->next == nullptr) delete *&clients;
 	(*counter)--;
 }
-void delClients(person* clients, int* counter) {
+void delClients(person* head, person* clients, int* counter) {
 	std::cout << "\n\tУдалить данные клиента\n\n\t\tПоиск по \n\n\t1. ФИО\t2. Счёту в базе\t0. Выход\n\n\t";
 	int inputNum;
 	cin >> inputNum;
 	std::system("cls");
+	clients = head;
 	switch (inputNum) {
 	case(0): {std::cout << "\n\n\tВыход"; std::system("cls"); return; }
 	case(1): {
@@ -513,25 +585,31 @@ void delClients(person* clients, int* counter) {
 		cin >> inputStr;
 		std::system("cls");
 		if (inputStr == "0") { return; }
-
+		int id = 1;
 		int searchID = -1;
 		int couErr = 0;
-		for (int i = 0; i < *counter; i++) {
-			if (inputStr == clients[i].Surname) { searchID = i; couErr++; }
-			if (inputStr == clients[i].Name) { searchID = i; couErr++; }
-			if (inputStr == clients[i].Patronymic) { searchID = i; couErr++; }
+		while (true){
+			if (clients->next == NULL)break;
+			if (inputStr == clients->Data.Surname)		{ searchID = id; couErr++; }
+			if (inputStr == clients->Data.Name)			{ searchID = id; couErr++; }
+			if (inputStr == clients->Data.Patronymic)	{ searchID = id; couErr++; }
+			clients = clients->next;
+			id++;
 		}
-
 		if (couErr > 1) { std::cout << "\n\n\tНайдено более одного клиента, введите дргуие даннные клиента. Нажмите любую клавишу для возврата в меню... "; char p = _getch(); std::system("cls"); return; }
 		if (searchID == -1) { std::cout << "\n\n\tКлиент не найден, нажмите любую клавишу что-бы вернуться в меню... "; char p = _getch(); std::system("cls"); return; }
 		if (searchID >= 0) {
-			std::cout << "\n\n\tУдалить данные клиента " << clients[searchID].Surname << " " << clients[searchID].Name
-				<< " " << clients[searchID].Patronymic << "\n\n\t1. Да\t2. Нет\n\n\t";
+			clients = head;
+			for (int i = 0; i < searchID-1; i++) {
+				clients = clients->next;
+			}
+			std::cout << "\n\n\tУдалить данные клиента " << clients->Data.Surname << " " << clients->Data.Name
+				<< " " << clients->Data.Patronymic << "\n\n\t1. Да\t2. Нет\n\n\t";
 			int inputH;
 			cin >> inputH;
 			std::system("cls");
 			switch (inputH) {
-			case(1): {swapAndDelClients(clients, counter, searchID);
+			case(1): {swapAndDelClients(head, clients, counter);
 				std::cout << "\n\n\tУспешно удалено, нажмите любую клавишу для выхода в меню... "; char p = _getch(); std::system("cls"); return;
 			}
 			case(2): { return; }
@@ -544,15 +622,17 @@ void delClients(person* clients, int* counter) {
 		int inputInt;
 		cin >> inputInt;
 		if (inputInt == 0)return;
-		inputInt--;
+		for (int i = 0; i < inputInt - 1; i++) {
+			clients = clients->next;
+		}
 		std::system("cls");
-		std::cout << "\n\n\tУдалить данные клиента " << clients[inputInt].Surname << " " << clients[inputInt].Name
-			<< " " << clients[inputInt].Patronymic << "\n\n\t1. Да\t2. Нет\n\n\t";
+		std::cout << "\n\n\tУдалить данные клиента " << clients->Data.Surname << " " << clients->Data.Name
+			<< " " << clients->Data.Patronymic << "\n\n\t1. Да\t2. Нет\n\n\t";
 		int inP;
 		cin >> inP;
 		std::system("cls");
 		switch (inP) {
-		case(1): {swapAndDelClients(clients, counter, inputInt);
+		case(1): {swapAndDelClients(head, clients, counter);
 			std::cout << "\n\n\tУспешно удалено, нажмите любую клавишу для выхода в меню... "; char p = _getch(); std::system("cls"); return;
 		}
 		case(2): { return; }
@@ -564,10 +644,9 @@ void delClients(person* clients, int* counter) {
 
 	std::system("cls");
 }
-//finished
 
 
-void showClients(person* clients, int* counter) {
+void showClients(person* head, person* clients, int* counter) {
 	std::cout << "\n\n\tВывести список клиентов\n\n";
 
 	int maxLenSurname = 7;
@@ -589,17 +668,17 @@ void showClients(person* clients, int* counter) {
 	int maxSumm = 0;
 
 	for (int i = 0; i < *counter; i++) {
-		int LenSurname = clients[i].Surname.length();
-		int LenName = clients[i].Name.length();
-		int LenPatronymic = clients[i].Patronymic.length();
-		int LenAddress = clients[i].Address.length();
-		int LenPhoneNum = clients[i].PhoneNum.length();
-		int LenPayDay = clients[i].PayDay.length();
-		int LenSumm = 0;
-		int Summ = clients[i].Summ;
-		int g = 0;
+		int LenSurname		= clients->Data.Surname.length();
+		int LenName			= clients->Data.Name.length();
+		int LenPatronymic	= clients->Data.Patronymic.length();
+		int LenAddress		= clients->Data.Address.length();
+		int LenPhoneNum		= clients->Data.PhoneNum.length();
+		int LenPayDay		= clients->Data.PayDay.length();
+		int LenSumm			= 0;
+		int Summ			= clients->Data.Summ;
+		int g				= 0;
 		while (Summ > 0) { Summ /= 10; LenSumm++; }
-		maxSumm += clients[i].Summ;
+		maxSumm += clients->Data.Summ;
 
 		if (LenSurname > maxLenSurname) { maxLenSurname = LenSurname; }
 		if (LenName > maxLenName) { maxLenName = LenName; }
@@ -634,13 +713,13 @@ void showClients(person* clients, int* counter) {
 	for (int i = 0; i < *counter; i++) {
 		printf_s(
 			"\t| %*s | %*s | %*s | %*s | %*s | %*s | %*d |",
-			maxLenSurname, clients[i].Surname.c_str(),
-			maxLenName, clients[i].Name.c_str(),
-			maxLenPatronymic, clients[i].Patronymic.c_str(),
-			maxLenAddress, clients[i].Address.c_str(),
-			maxLenPhoneNum, clients[i].PhoneNum.c_str(),
-			maxLenPayDay, clients[i].PayDay.c_str(),
-			maxLenSumm, clients[i].Summ
+			maxLenSurname, clients->Data.Surname.c_str(),
+			maxLenName, clients->Data.Name.c_str(),
+			maxLenPatronymic, clients->Data.Patronymic.c_str(),
+			maxLenAddress, clients->Data.Address.c_str(),
+			maxLenPhoneNum, clients->Data.PhoneNum.c_str(),
+			maxLenPayDay, clients->Data.PayDay.c_str(),
+			maxLenSumm, clients->Data.Summ
 		);
 
 		std::cout << "\n\t";
@@ -659,13 +738,13 @@ void showClients(person* clients, int* counter) {
 	std::cout << "\n\tНажмите любую клавишу для возврата в меню... "; char p = _getch(); std::system("cls");
 	std::system("cls");
 }
-//finished 
+ 
 
-void show(person* clients, int* counter, int searchID) {
-	std::cout << "\n\n\tФИО: " << clients[searchID].Surname << " " << clients[searchID].Name << " " << clients[searchID].Patronymic << " Адресс: "
-		<< clients[searchID].Address << "\n\tТелефоный номер: " << clients[searchID].PhoneNum << " День оплаты: " << clients[searchID].PayDay << " Сумма: " << clients[searchID].Summ;
+void show(person* head, person* clients, int* counter, int searchID) {
+	std::cout << "\n\n\tФИО: " << clients->Data.Surname << " " << clients->Data.Name << " " << clients->Data.Patronymic << " Адресс: "
+		<< clients->Data.Address << "\n\tТелефоный номер: " << clients->Data.PhoneNum << " День оплаты: " << clients->Data.PayDay << " Сумма: " << clients->Data.Summ;
 }
-void searchClients(person* clients, int* counter) {
+void searchClients(person* head, person* clients, int* counter) {
 	std::cout << "\n\tПоиск клиента по базе";
 	std::cout << "\n\n\tВведите Фамилию или Имя или Отчество\t0. Выход\n\n\t";
 	string inputStr;
@@ -675,15 +754,15 @@ void searchClients(person* clients, int* counter) {
 
 	int searchID = -1;
 	for (int i = 0; i < *counter; i++) {
-		if (inputStr == clients[i].Surname) { searchID = i; show(clients, counter, searchID); }
-		if (inputStr == clients[i].Name) { searchID = i; show(clients, counter, searchID); }
-		if (inputStr == clients[i].Patronymic) { searchID = i; show(clients, counter, searchID); }
+		if (inputStr == clients->Data.Surname)		{ searchID = i; show(head, clients, counter, searchID); }
+		if (inputStr == clients->Data.Name)			{ searchID = i; show(head, clients, counter, searchID); }
+		if (inputStr == clients->Data.Patronymic)	{ searchID = i; show(head, clients, counter, searchID); }
 	}
 	if (searchID >= 0) { std::cout << "\n\n\tНажмите любую клавишу что-бы вернуться в меню... "; char p = _getch(); std::system("cls");  return; }
 	if (searchID == -1) { std::cout << "\n\n\tКлиент не найден, нажмите любую клавишу что-бы вернуться в меню... "; char p = _getch(); std::system("cls"); return; }
 	std::system("cls");
 }
-//finish
+
 
 /*void swapSelectionClients(person* clients, int* counter, int couA, int i) {
 	//for (int i = searchID; i < *counter; i++) {
