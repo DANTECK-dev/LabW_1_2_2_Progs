@@ -2,12 +2,16 @@
 #include <Windows.h>
 #include <stdio.h>
 #include <conio.h>
-#include <stdlib.h>
 #include <string>
 #include <cstdlib>
 #include <cmath>
 #include <time.h>
 #include <random>
+#include <stdlib.h>
+#include <malloc.h>
+#include <algorithm>
+#include <cstddef>
+#include <utility>
 
 using namespace std;
 
@@ -923,41 +927,86 @@ void searchClients(person* head, person* tail, person* clients) {
 #pragma region additionalTask
 
 
-struct myStruct {
-	myStruct* leftBranch = NULL;
-	myStruct* rightBranch = NULL;
-	int Data;
-};
+void TreeSort(int *arr, int size) {
+	
+	struct BinaryTree {
+		BinaryTree* left, *right;
+		int Data;
+
+		BinaryTree(int&& _Data = int()) {
+			left = right = nullptr;
+			Data = forward<int>(_Data);
+		}
+		int* operator()(int arr[]) {
+			if (this->left)
+				arr = this->left->operator()(arr);
+			*arr++ = move(this->Data);
+			if (this->right)
+				arr = this->right->operator()(arr);
+			return arr;
+		}
+	}root(move(arr[0]));
+
+	for (int i = 1; i < size; i++) {
+		bool inserted = false;
+		BinaryTree* p_root = &root;
+		while (!inserted) {
+			if (arr[i] < p_root->Data) {
+				if (p_root->left) p_root = p_root->left;
+				else {
+					p_root->left = new BinaryTree(move(arr[i]));
+					inserted = true;
+				}
+			}
+			else {
+				if (p_root->right) p_root = p_root->right;
+				else {
+					p_root->right = new BinaryTree(move(arr[i]));
+					inserted = true;
+				}
+			}
+		}
+	}
+	root(arr);
+}
 
 void additionalTask() {
 	/*Реализуйте древесную сортировку массива целых чисел на основе структуры бинарного
 	дерева. Учтите возможность наличия одинаковых элементов в массиве (такие элементы не
 	должны пропасть при сортировке).*/
 
-	/*myStruct* head = NULL;
-	head = new myStruct;
-	myStruct* binaryTree = NULL;
-	binaryTree = head;
-	binaryTree->Data = rand() % 100;
+	/*BinaryTree* root = NULL;
+	root = new BinaryTree;
+	BinaryTree* leftBranch = NULL;
+	BinaryTree* rightBranch = NULL;
+	leftBranch = root;
+	rightBranch = root;
+	root->Data = rand() % 100;*/
 	srand(time(NULL));
 
-	while (true) {
-		cout << "menu";																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												
-		int inputNum;
-		cin >> inputNum;
-		switch (inputNum) {
-		case(0): {std::cout << "\n\n\tВведено неверное значение, нажмите любую клавишу для возврата в меню... ";
-			char p = _getch();
-			std::system("cls");
-			return;
-		}
-		case(1):{}
-		case(1): {}
-		case(1): {}
-		default:{}
-		}
-	}*/
+	cout << "\n\n\tВведите размер саортируемого массива: ";
+	int size;
+	cin >> size;
+	system("cls");
+	int* arr = new int[size];
+	cout << "\n\n\tБез сортировки: ";
+	for (int i = 0; i < size; i++) {
+		arr[i] = rand() % 100;
+		cout << arr[i] << " ";
+	}
 
+	TreeSort(arr, size);
+
+	cout << "\n\n\tОтсортирован: ";
+	for (int i = 0; i < size; i++) {
+		cout << arr[i] << " ";
+	}
+
+	std::cout << "\n\n\tНажмите любую клавишу что-бы вернуться в меню... ";
+	char p = _getch();
+	std::system("cls");
+	return;
+	
 }
 
 
