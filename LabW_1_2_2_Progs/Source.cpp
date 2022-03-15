@@ -1078,8 +1078,7 @@ TREE* AddTree(TREE* root, int value) {
 }
 
 void ArrTree(TREE* root, int arr[], int *counter) {
-	//int count = 0;                      // счетчик элементов нового массива
-	if (root->left != NULL)             // условие окончания - нет сыновей
+	if (root->left != NULL)
 		ArrTree(root->left, arr, counter);    // обход левого поддерева
 	arr[(*counter)++] = root->field;
 	if (root->right != NULL)
@@ -1180,9 +1179,9 @@ void additionalTask() {
 		}
 	}
 	root(arr);
-}*/
+}
 
-/*void additionalTask() {
+void additionalTask() {
 	Реализуйте древесную сортировку массива целых чисел на основе структуры бинарного
 	дерева. Учтите возможность наличия одинаковых элементов в массиве (такие элементы не
 	должны пропасть при сортировке).
