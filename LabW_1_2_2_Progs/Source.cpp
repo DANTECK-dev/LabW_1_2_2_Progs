@@ -67,7 +67,7 @@ void firstGeneralTask() {
 		string field;
 	};
 
-	std::cout<<"\n\n\tCколько будет элементов списка\n\n\t";
+	/*std::cout << "\n\n\tCколько будет элементов списка\n\n\t";
 	int structSize;
 	cin >> structSize;
 	std::system("cls");
@@ -76,13 +76,13 @@ void firstGeneralTask() {
 	string str;
 	std::cout << "\n\n\tВведите данные 1 элемента: ";
 	cin >> str;
+	*/
 
 	FIFO_LIFO* head = NULL;
-	head = new FIFO_LIFO;
-	head->field = str;
-	FIFO_LIFO* pointer = head;
+	FIFO_LIFO* pointer = NULL;
+	FIFO_LIFO* tail = NULL;
 
-	for (int i = 1; i < structSize; i++) {
+	/*for (int i = 1; i < structSize; i++) {
 		std::cout << "\n\tВведите данные " << i + 1 << " элемента: ";
 		cin >> str;
 		pointer->next = new FIFO_LIFO; // создаем новый элемент
@@ -137,7 +137,137 @@ void firstGeneralTask() {
 		}
 		default: {std::cout << "\n\n\tВведенно неверное значение, нажмите любую клавишу для выхода... "; char p = _getch(); std::system("cls"); return; }
 	}
+	*/
 
+	std::cout << "\n\t1.LIFO\n\t2.FIFO\n\t0.Выход\n\n\t";
+	int inputNum;
+	cin >> inputNum;
+	system("cls");
+	switch (inputNum) {
+	case(0): break;
+	case(1): {
+		while (true) {
+			std::cout << "\n\tLIFO\n\n\t1. Добавить\n\t2. Достать\n\t0. Выход\n\n\t";
+			int inN;
+			cin >> inN;
+			system("cls");
+			switch (inN) {
+			case(0):{ return;}
+			case(1): {
+
+				cout << "\n\tВведите значение: ";
+				string str;
+				cin >> str;
+
+				if (tail == NULL && head == NULL) {
+					pointer = new FIFO_LIFO;
+					tail = pointer;
+					head = pointer;
+					pointer->field = str;
+					continue;
+				}
+
+				pointer->next = new FIFO_LIFO;
+				pointer = pointer->next;
+				tail = pointer;
+				pointer->field = str;
+				break;
+			}
+			case(2): {
+
+				if (head ==NULL && tail == NULL) {
+					cout << "\n\tБольше нет элементов\n";
+					break;
+				}
+
+				cout <<"\n\t" << tail->field << "\n\t";
+
+				if (head == tail) {
+					cout << "\n\tБольше нет элементов\n";
+					head = NULL;
+					tail = NULL;
+					break;
+				}
+
+				pointer = head;
+				while (true) {
+					if (pointer->next == tail) break;
+					pointer = pointer->next;
+				}
+				delete tail;
+				tail = pointer;
+				break;
+				}
+				default: {
+					std::cout << "\n\tОшибка ввода... ";
+					char p = _getch();
+					system("cls");
+					break;
+				}
+			}
+		}
+	}
+	case(2): {
+		while (true) {
+			std::cout << "\n\n\tFIFO\n\n\t1. Добавить\n\t2. Достать\n\t0. Выход";
+			int inN;
+			cin >> inN;
+			system("cls");
+			switch (inN) {
+			case(0): {return;}
+			case(1): {
+				cout << "\n\n\tВведите значение: ";
+				string str;
+				cin >> str;
+				if (tail == NULL && head == NULL) {
+					pointer = new FIFO_LIFO;
+					tail = pointer;
+					head = pointer;
+					pointer->field = str;
+					continue;
+				}
+				pointer->next = new FIFO_LIFO;
+				pointer = pointer->next;
+				tail = pointer;
+				pointer->field = str;
+				break;
+			}
+			case(2): {
+
+				if (head == NULL && tail == NULL) {
+					cout << "\n\tБольше нет элементов\n";
+					break;
+				}
+
+				cout << "\n\t" << head->field << "\n\t";
+
+				if (head == tail) {
+					cout << "\n\tБольше нет элементов\n";
+					head = NULL;
+					tail = NULL;
+					break;
+				}
+
+				pointer = head;
+				pointer = pointer->next;
+				delete head;
+				head = pointer;
+				break;
+			}
+			default: {
+				std::cout << "\n\n\tОшибка ввода... ";
+				char p = _getch();
+				break;
+			}
+			}
+		}
+	}
+	default: {
+		std::cout << "Ошибка ввода... ";
+		char p = _getch();
+		break;
+	}
+	}
 	std::cout << "\n\n\tНажмите любую клавишу для выхода... "; char p = _getch(); std::system("cls"); return;
 }
 
