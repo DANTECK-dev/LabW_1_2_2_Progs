@@ -1057,7 +1057,88 @@ void searchClients(person* head, person* tail, person* clients) {
 #pragma region additionalTask
 
 
-void TreeSort(int *arr, int size) {
+typedef struct tree {
+	int field;
+	struct tree *left, *right;
+} TREE;
+
+TREE* AddTree(TREE* root, int value) {
+
+	if (root == NULL) {
+		root = new TREE;
+		root->field = value;
+		root->left = root->right = 0;
+		return root;
+	}
+	if (root->field < value)          // добавлем ветвь
+		root->right = AddTree(root->right, value);
+	else
+		root->left  = AddTree(root->left,  value);
+	return root;
+}
+
+void ArrTree(TREE* root, int arr[], int *counter) {
+	//int count = 0;                      // счетчик элементов нового массива
+	if (root->left != NULL)             // условие окончания - нет сыновей
+		ArrTree(root->left, arr, counter);    // обход левого поддерева
+	arr[(*counter)++] = root->field;
+	if (root->right != NULL)
+		ArrTree(root->right, arr, counter);      // обход правого поддерева
+	free(root);
+}
+
+void TreeSort(int arr[], int size) {
+
+	TREE* root;
+	int i;
+	root = NULL;
+
+	for (i = 0; i < size; i++)
+		root = AddTree(root, arr[i]);
+
+	int *count = new int;
+	*count = 0;
+	ArrTree(root, arr, count);             // заполнение массива
+}
+
+void additionalTask() {
+	/*Реализуйте древесную сортировку массива целых чисел на основе структуры бинарного
+	дерева. Учтите возможность наличия одинаковых элементов в массиве (такие элементы не
+	должны пропасть при сортировке).*/
+
+	srand(time(NULL));
+
+	cout << "\n\n\tВведите размер сортируемого массива: ";
+	int size;
+	cin >> size;
+	system("cls");
+	int* arr = new int[size];
+
+	cout << "\n\n\tБез сортировки: ";
+	for (int i = 0; i < size; i++) {
+		int temp = rand() % 100;
+		arr[i] = temp;
+		cout << temp << " ";
+	}
+
+	//for (int i = 0; i < size; i++) {
+		TreeSort(arr, size);
+	//}
+
+	cout << "\n\n\tОтсортирован: ";
+	for (int i = 0; i < size; i++) {
+		cout << arr[i] << " ";
+	}
+
+	std::cout << "\n\n\tНажмите любую клавишу что-бы вернуться в меню... ";
+	char p = _getch();
+	std::system("cls");
+	return;
+
+}
+
+
+/*void TreeSort(int *arr, int size) {
 	
 	struct BinaryTree {
 		BinaryTree* left, *right;
@@ -1067,6 +1148,7 @@ void TreeSort(int *arr, int size) {
 			left = right = nullptr;
 			Data = forward<int>(_Data);
 		}
+
 		int* operator()(int arr[]) {
 			if (this->left)
 				arr = this->left->operator()(arr);
@@ -1098,46 +1180,39 @@ void TreeSort(int *arr, int size) {
 		}
 	}
 	root(arr);
-}
+}*/
 
-void additionalTask() {
-	/*Реализуйте древесную сортировку массива целых чисел на основе структуры бинарного
+/*void additionalTask() {
+	Реализуйте древесную сортировку массива целых чисел на основе структуры бинарного
 	дерева. Учтите возможность наличия одинаковых элементов в массиве (такие элементы не
-	должны пропасть при сортировке).*/
+	должны пропасть при сортировке).
 
-	/*BinaryTree* root = NULL;
-	root = new BinaryTree;
-	BinaryTree* leftBranch = NULL;
-	BinaryTree* rightBranch = NULL;
-	leftBranch = root;
-	rightBranch = root;
-	root->Data = rand() % 100;*/
-	srand(time(NULL));
+srand(time(NULL));
 
-	cout << "\n\n\tВведите размер саортируемого массива: ";
-	int size;
-	cin >> size;
-	system("cls");
-	int* arr = new int[size];
-	cout << "\n\n\tБез сортировки: ";
-	for (int i = 0; i < size; i++) {
-		arr[i] = rand() % 100;
-		cout << arr[i] << " ";
-	}
-
-	TreeSort(arr, size);
-
-	cout << "\n\n\tОтсортирован: ";
-	for (int i = 0; i < size; i++) {
-		cout << arr[i] << " ";
-	}
-
-	std::cout << "\n\n\tНажмите любую клавишу что-бы вернуться в меню... ";
-	char p = _getch();
-	std::system("cls");
-	return;
-	
+cout << "\n\n\tВведите размер саортируемого массива: ";
+int size;
+cin >> size;
+system("cls");
+int* arr = new int[size];
+cout << "\n\n\tБез сортировки: ";
+for (int i = 0; i < size; i++) {
+	arr[i] = rand() % 100;
+	cout << arr[i] << " ";
 }
+
+TreeSort(arr, size);
+
+cout << "\n\n\tОтсортирован: ";
+for (int i = 0; i < size; i++) {
+	cout << arr[i] << " ";
+}
+
+std::cout << "\n\n\tНажмите любую клавишу что-бы вернуться в меню... ";
+char p = _getch();
+std::system("cls");
+return;
+
+}*/
 
 
 
